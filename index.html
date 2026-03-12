@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NJ School District AI Policy Dashboard</title>
+    <link rel="preconnect" href="https://unpkg.com" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="./" class="is-active" aria-current="page">Map</a>
+      <a href="./dashboard/">Dashboard</a>
+    </nav>
+    <header class="topbar">
+      <div>
+        <h1>NJ School District AI Policy Dashboard</h1>
+        <p>Hover or click a district to view AI policy files and source links.</p>
+      </div>
+      <div class="counts" id="counts"></div>
+    </header>
+
+    <main class="layout">
+      <section class="map-shell">
+        <div class="controls">
+          <label for="search">District search</label>
+          <input id="search" type="search" placeholder="Type district name..." />
+          <select id="district-type" aria-label="District type filter">
+            <option value="ALL">All district types</option>
+            <option value="U" selected>Unified only</option>
+            <option value="S">Secondary only</option>
+            <option value="E">Elementary only</option>
+          </select>
+          <button id="clear-selection" type="button">Clear selection</button>
+        </div>
+        <div id="map" aria-label="Map of New Jersey school districts"></div>
+        <p class="hint" id="map-hint"></p>
+      </section>
+
+      <aside class="panel" id="panel">
+        <h2 id="panel-title">Select a district</h2>
+        <p id="panel-subtitle">Hover over a district on the map to preview details.</p>
+        <div id="panel-content" class="panel-content"></div>
+      </aside>
+    </main>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

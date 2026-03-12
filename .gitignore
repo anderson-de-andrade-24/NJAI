@@ -1,0 +1,14 @@
+.DS_Store
+
+# Keep site data small enough for normal GitHub push and Pages hosting.
+data/*
+!data/policies.json
+!data/nj-school-districts.geojson
+
+# Research and intermediate artifacts not needed for published site.
+*.xlsx
+*.sas7bdat
+*.zip
+logs/
+scripts/
+figures/
