@@ -48,10 +48,18 @@ const typeLabels = {
   E: "Elementary",
 };
 
-function normalizeName(name) {
+function canonicalizeName(name) {
   return String(name || "")
     .toLowerCase()
     .replace(/&/g, " and ")
+    .replace(/\bdisrict\b/g, "district")
+    .replace(/\birvngton\b/g, "irvington")
+    .replace(/\bpasssaic\b/g, "passaic")
+    .replace(/\bsd\b/g, "school district");
+}
+
+function normalizeName(name) {
+  return canonicalizeName(name)
     .replace(/[^a-z0-9\s]/g, " ")
     .split(/\s+/)
     .filter(Boolean)
@@ -99,6 +107,16 @@ function resolvePoliciesForDistrict(districtName) {
   }
 
   return [];
+}
+
+function findPolicyMatchesBySearch(query) {
+  const needle = normalizeName(query);
+  if (!needle) return [];
+
+  return policies.filter((item) => {
+    const key = normalizeName(item.district);
+    return key && (key.includes(needle) || needle.includes(key));
+  });
 }
 
 function renderCounts() {
@@ -294,7 +312,10 @@ function renderGeoLayer() {
 function wireSearch() {
   searchInput.addEventListener("input", () => {
     const needle = normalizeName(searchInput.value);
-    if (!needle) return;
+    if (!needle) {
+      if (!selectedLayer) resetPanel();
+      return;
+    }
 
     for (const [norm, layer] of districtLookup.entries()) {
       if (!norm.includes(needle)) continue;
@@ -307,6 +328,15 @@ function wireSearch() {
       map.fitBounds(layer.getBounds(), { maxZoom: 11 });
       return;
     }
+
+    const policyMatches = findPolicyMatchesBySearch(searchInput.value);
+    if (!policyMatches.length) return;
+
+    if (selectedLayer) {
+      setLayerState(selectedLayer, false, false);
+      selectedLayer = null;
+    }
+    renderDistrictDetails(searchInput.value, policyMatches, "Policy-only");
   });
 
   districtTypeSelect.addEventListener("change", () => {
