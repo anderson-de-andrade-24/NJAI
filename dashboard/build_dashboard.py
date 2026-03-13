@@ -205,6 +205,35 @@ def build_html(payload):
         var(--bg);
     }}
 
+    .site-nav {{
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      padding: 14px 18px 0;
+    }}
+
+    .site-nav a {{
+      display: inline-block;
+      text-decoration: none;
+      color: #0d5159;
+      border: 1px solid #bfd6d2;
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: #eef7f6;
+      font-weight: 600;
+      font-size: 0.88rem;
+    }}
+
+    .site-nav a:hover {{
+      background: #e4f2f1;
+    }}
+
+    .site-nav a.is-active {{
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }}
+
     .layout {{
       display: grid;
       grid-template-columns: 280px 1fr;
@@ -342,6 +371,10 @@ def build_html(payload):
   </style>
 </head>
 <body>
+  <nav class=\"site-nav\" aria-label=\"Primary\">
+    <a href=\"../\">Map</a>
+    <a href=\"./\" class=\"is-active\" aria-current=\"page\">Dashboard</a>
+  </nav>
   <div class=\"layout\">
     <aside class=\"panel filters\">
       <h2>Filter & Search</h2>
