@@ -1,0 +1,21 @@
+PDFs processed: 301
+Readable PDFs used for similarity: 300
+Unreadable PDFs: 1
+
+Top 10 most similar pairs:
+- Englewood_City_School_District_AI_Policy.pdf <> Englewood_Cliffs_School_District_AI_Policy.pdf: 1.0000
+- Washington_Township_School_District_Gloucester_AI_Policy.pdf <> Washington_Township_School_District_Morris_AI_Policy.pdf: 1.0000
+- Delaware_Valley_Regional_High_School_District_AI_Policy.pdf <> Frenchtown_Borough_School_District_AI_Policy.pdf: 1.0000
+- Mansfield_Township_Elementary_School_District_AI_Policy.pdf <> Mansfield_Township_School_District_AI_Policy.pdf: 1.0000
+- Atlantic_Highlands_School_District_AI_Policy.pdf <> Henry_Hudson_Regional_School_District_AI_Policy.pdf: 1.0000
+- Atlantic_Highlands_School_District_AI_Policy.pdf <> Highlands_Borough_School_District_AI_Policy.pdf: 1.0000
+- Henry_Hudson_Regional_School_District_AI_Policy.pdf <> Highlands_Borough_School_District_AI_Policy.pdf: 1.0000
+- Gloucester_County_Special_Services_School_District_AI_Policy.pdf <> Gloucester_County_Vocational_Technical_School_District_AI_Policy.pdf: 1.0000
+- Ocean_Township_School_District_AI_Policy.pdf <> Township_Of_Ocean_School_District_AI_Policy.pdf: 1.0000
+- Monroe_Township_School_District_Gloucester_AI_Policy.pdf <> Monroe_Township_School_District_Middlesex_AI_Policy.pdf: 1.0000
+
+Cosine similarity range across non-self pairs: 0.0005 to 1.0000
+Highly similar groups at threshold 0.75: 8
+
+Unreadable PDFs:
+- Ridgefield_School_District_AI_Policy.pdf

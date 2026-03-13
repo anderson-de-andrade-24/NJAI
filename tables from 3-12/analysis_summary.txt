@@ -1,0 +1,26 @@
+AI Policy Adoption Analysis Summary
+
+Total districts analyzed: 601
+Districts with an AI policy: 320 (53.2%)
+Districts without an AI policy: 281 (46.8%)
+
+Descriptive patterns:
+- Districts with AI policies average 2481 students, compared with 2084 among districts without AI policies.
+- Mean minority enrollment is 37.3% for districts with AI policies versus 32.7% for districts without.
+- Mean below-poverty share is 8.1% for districts with AI policies versus 9.7% for districts without.
+- Mean SNAP share is 9.6% for districts with AI policies versus 12.2% for districts without.
+
+Bivariate differences with p < 0.05:
+- district_size_class | overall categorical association | p=0.0012
+- county | overall categorical association | p=0.0007
+
+Logistic regression highlights:
+- Minority enrollment (1 SD): OR=1.38 (95% CI 0.98-1.95), p=0.0669
+- Below poverty (1 SD): OR=0.84 (95% CI 0.56-1.26), p=0.4049
+- SNAP share (1 SD): OR=0.80 (95% CI 0.54-1.19), p=0.2757
+- Log enrollment (1 SD): OR=0.96 (95% CI 0.52-1.75), p=0.8870
+- Medium district (vs. small): OR=1.02 (95% CI 0.46-2.24), p=0.9634
+- Large district (vs. small): OR=1.06 (95% CI 0.23-4.97), p=0.9421
+
+Policy-type patterns:
+- The most common classified policy frame is Risk/Surveillance (n=49).

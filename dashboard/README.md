@@ -12,7 +12,7 @@ python3 "/Users/anderson/Desktop/AI Policies folder/dashboard/build_dashboard.py
 ```
 
 The script currently reads from:
-- `/Users/anderson/Downloads/NJ AI Policies Schools List.xlsx`
+- `/Users/anderson/Desktop/AI Policies folder/NJ AI Policies Schools List.xlsx`
 
 ## Included features
 - District name search (instant filtering)

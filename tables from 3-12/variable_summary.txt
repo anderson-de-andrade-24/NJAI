@@ -1,0 +1,28 @@
+District AI Policy Analysis Variable Summary
+
+Rows in master dataset: 601
+Districts with AI policy: 320
+Districts without AI policy: 281
+
+Standardized variables and notes:
+- has_ai_policy: 1 if policy retrieval status was success or partial in the policy collection log; 0 otherwise.
+- minority_enrollment: cleaned from spreadsheet percentage/proportion strings to a 0-1 share.
+- below_poverty: cleaned from spreadsheet percentage/proportion strings to a 0-1 share.
+- snap_share: cleaned from spreadsheet percentage/proportion strings to a 0-1 share.
+- nces_district_population: NCES district population from the source spreadsheet.
+- log_population: natural log of (1 + nces_district_population).
+- policy_similarity_cluster_id / cluster_size: merged from cosine-similarity clustering outputs for districts with readable policy PDFs.
+- primary_ai_policy_frame and index variables are retained from the original spreadsheet when available.
+
+Missingness summary:
+- district_id: non-missing=601, missing=0
+- district_name: non-missing=601, missing=0
+- county: non-missing=601, missing=0
+- district_size_class: non-missing=601, missing=0
+- nces_district_population: non-missing=578, missing=23
+- minority_enrollment: non-missing=320, missing=281
+- below_poverty: non-missing=267, missing=334
+- snap_share: non-missing=267, missing=334
+- has_ai_policy: non-missing=601, missing=0
+- primary_ai_policy_frame: non-missing=67, missing=534
+- policy_similarity_cluster_id: non-missing=300, missing=301

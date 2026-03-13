@@ -8,8 +8,9 @@ from pathlib import Path
 
 from openpyxl import load_workbook
 
-INPUT_XLSX = Path('/Users/anderson/Downloads/NJ AI Policies Schools List.xlsx')
-OUTPUT_HTML = Path('/Users/anderson/Desktop/AI Policies folder/dashboard/index.html')
+REPO_ROOT = Path(__file__).resolve().parents[1]
+INPUT_XLSX = REPO_ROOT / 'NJ AI Policies Schools List.xlsx'
+OUTPUT_HTML = REPO_ROOT / 'dashboard' / 'index.html'
 
 FIELDS = [
     'ID',

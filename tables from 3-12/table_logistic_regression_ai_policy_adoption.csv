@@ -1,0 +1,8 @@
+term,coefficient_log_odds,odds_ratio,ci_lower_odds_ratio,ci_upper_odds_ratio,p_value,n_observations
+Intercept,0.2037,1.226,0.8865,1.6953,0.218,264
+Minority enrollment (1 SD),0.3215,1.3792,0.9779,1.9452,0.0669,264
+Below poverty (1 SD),-0.1719,0.8421,0.562,1.2618,0.4049,264
+SNAP share (1 SD),-0.2221,0.8008,0.5371,1.194,0.2757,264
+Log enrollment (1 SD),-0.0438,0.9571,0.5229,1.7518,0.887,264
+Medium district (vs. small),0.0185,1.0186,0.4629,2.2415,0.9634,264
+Large district (vs. small),0.0573,1.059,0.2255,4.9732,0.9421,264

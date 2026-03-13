@@ -1,0 +1,22 @@
+Readable PDFs clustered: 300
+Clusters found at similarity threshold 0.75: 60
+
+Largest clusters:
+- Cluster 40: 132 documents | examples: Allamuchy_Township_School_District_AI_Policy.pdf, Allendale_Public_School_District_AI_Policy.pdf, Atlantic_Highlands_School_District_AI_Policy.pdf, Avon_Boro_School_District_AI_Policy.pdf, Barnegat_Township_School_District_AI_Policy.pdf, Bayonne_School_District_AI_Policy.pdf, Bedminster_Township_Public_School_AI_Policy.pdf, Bergenfield_Borough_School_District_AI_Policy.pdf
+- Cluster 13: 93 documents | examples: Andover_Regional_School_District_AI_Policy.pdf, Asbury_Park_School_District_AI_Policy.pdf, Atlantic_City_Public_Schools_AI_Policy.pdf, Audubon_Public_School_Disrict_AI_Policy.pdf, Barrington_School_District_AI_Policy.pdf, Bayshore_Jointure_Commission_AI_Policy.pdf, Bellmawr_Public_School_District_AI_Policy.pdf, Belvidere_School_District_AI_Policy.pdf
+- Cluster 28: 6 documents | examples: Mantua_Township_School_District_AI_Policy.pdf, Monroe_Township_School_District_Gloucester_AI_Policy.pdf, Monroe_Township_School_District_Middlesex_AI_Policy.pdf, Rumson_Borough_School_District_AI_Policy.pdf, Trenton_Public_School_District_AI_Policy.pdf, West_Deptford_Township_School_District_AI_Policy.pdf
+- Cluster 24: 5 documents | examples: Cresskill_Public_School_District_AI_Policy.pdf, Hackensack_Public_Schools_AI_Policy.pdf, Livingston_Township_School_District_AI_Policy.pdf, Old_Tappan_Public_School_District_AI_Policy.pdf, Point_Pleasant_Borough_School_District_AI_Policy.pdf
+- Cluster 23: 3 documents | examples: Area_Vocational_Technical_Schools_Of_Mercer_County_AI_Policy.pdf, Mercer_County_Special_Services_School_District_AI_Policy.pdf, New_Providence_Board_Of_Education_AI_Policy.pdf
+- Cluster 39: 3 documents | examples: Burlington_City_School_District_AI_Policy.pdf, Edgewater_Park_Township_School_District_AI_Policy.pdf, Princeton_Public_Schools_AI_Policy.pdf
+- Cluster 11: 2 documents | examples: Beach_Haven_School_District_AI_Policy.pdf, Eastern_Camden_County_Regional_School_District_AI_Policy.pdf
+- Cluster 12: 2 documents | examples: Delaware_Valley_Regional_High_School_District_AI_Policy.pdf, Frenchtown_Borough_School_District_AI_Policy.pdf
+- Cluster 22: 2 documents | examples: Washington_Township_School_District_Gloucester_AI_Policy.pdf, Washington_Township_School_District_Morris_AI_Policy.pdf
+- Cluster 36: 2 documents | examples: Branchburg_Township_School_District_AI_Policy.pdf, Somerville_Public_School_District_AI_Policy.pdf
+
+Clusters with 2+ documents: 10
+Near-duplicate/template signal: Yes. Multiple multi-document clusters and several cosine scores near 1.0 suggest template-based or reused policy text.
+
+Interpretation notes:
+- Cluster IDs are derived from hierarchical clustering on TF-IDF cosine distance.
+- Documents in the same cluster meet the distance cut implied by the similarity threshold.
+- The labeled clustered heatmap preserves document names; the simplified version emphasizes block structure.

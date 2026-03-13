@@ -1,0 +1,8 @@
+policy_frame,n_districts,mean_enrollment,sd_enrollment,mean_minority_share_pct,mean_below_poverty_pct,mean_snap_share_pct,most_common_size_class,most_common_county
+Risk/Surveillance,49,1677.8,1483.67,38.9,9.61,10.26,small,Bergen
+Guidance,5,2388.6,1148.01,42.4,4.9,7.28,small,Bergen
+Mixed (Risk/Surveillance + Restriction),3,2310.67,383.22,21.67,7.4,1.57,small,Camden
+Mixed (Opportunity/Innovation + Restriction + Guidance),2,2286.0,1514.62,41.5,12.7,16.05,medium,Atlantic
+Mixed (Risk/Surveillance + Restriction + Guidance),2,3913.5,5141.37,17.0,6.0,14.3,medium,Camden
+Mixed (Restriction + Guidance),1,164.0,,13.0,,,small,Cape May
+Needs Manual Review,1,1395.0,,68.0,0.0,0.0,small,Bergen
