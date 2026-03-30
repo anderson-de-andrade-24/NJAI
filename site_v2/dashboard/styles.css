@@ -214,10 +214,31 @@ thead th {
   text-align: left;
   background: #f4f9f7;
   color: #41585d;
-  padding: 9px;
+  padding: 0;
   border-bottom: 1px solid #dfebe7;
   position: sticky;
   top: 0;
+}
+
+.sort-button {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  padding: 9px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sort-button:hover {
+  background: #eaf4f1;
+}
+
+.sort-button.active {
+  color: #0a7a86;
 }
 
 tbody td {
