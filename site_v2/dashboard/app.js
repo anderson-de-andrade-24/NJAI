@@ -102,7 +102,6 @@ function filteredRecords() {
 function renderKPIs(records) {
   const withPolicy = records.filter((record) => record.has_ai_policy).length;
   const withLabels = records.filter((record) => record.policy_label).length;
-  const withMinority = records.filter((record) => record.minority_enrollment !== null).length;
   const counties = new Set(records.map((record) => record.county).filter(Boolean)).size;
 
   const cards = [
@@ -110,7 +109,6 @@ function renderKPIs(records) {
     { label: "Has AI Policy", value: withPolicy },
     { label: "Has Policy Label", value: withLabels },
     { label: "Counties", value: counties },
-    { label: "Minority Data Available", value: withMinority },
   ];
 
   el.kpiContainer.innerHTML = cards
