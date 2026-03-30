@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-03-30 10:44",
+  "source_workbook": "Copy of NJ AI Policies Schools List (3-30).xlsx",
+  "record_count": 600,
+  "districts_with_ai_policy": 342,
+  "districts_with_policy_label": 298,
+  "star_cells_converted_to_missing": 354,
+  "demographic_non_missing_counts": {
+    "minority_enrollment": 550,
+    "below_poverty": 470,
+    "snap": 470,
+    "population": 561
+  },
+  "policy_label_rule": "Policy labels prefer the unlabeled workbook column after 'Relevant AI Policy Documents', then fall back to label extraction from policy URLs/text such as policyid=5701 or filenames containing AI policy numbers."
+}

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NJ School District AI Policy Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="../">Map</a>
+      <a href="./" class="is-active" aria-current="page">Dashboard</a>
+    </nav>
+
+    <div class="layout">
+      <aside class="panel filters">
+        <h2>Filter & Search</h2>
+        <div class="sub">Search districts and filter by demographics and policy presence.</div>
+
+        <div class="control">
+          <label for="districtSearch">District Name</label>
+          <input id="districtSearch" type="text" placeholder="Type district name..." />
+        </div>
+
+        <div class="control">
+          <label for="countySelect">County</label>
+          <select id="countySelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="policySelect">AI Policy</label>
+          <select id="policySelect">
+            <option value="all">All districts</option>
+            <option value="yes">Has AI policy</option>
+            <option value="no">No AI policy</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="sizeSelect">District Size</label>
+          <select id="sizeSelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="minoritySelect">Minority Enrollment</label>
+          <select id="minoritySelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="povertySelect">Below Poverty</label>
+          <select id="povertySelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="snapSelect">SNAP</label>
+          <select id="snapSelect"></select>
+        </div>
+
+        <div class="control">
+          <button id="resetBtn" type="button">Reset Filters</button>
+        </div>
+      </aside>
+
+      <main class="panel content">
+        <div class="top">
+          <div>
+            <h1>NJ AI Policy Dashboard</h1>
+            <div class="sub">Source: Copy of NJ AI Policies Schools List (3-30).xlsx</div>
+          </div>
+          <div class="pill" id="lastUpdated"></div>
+        </div>
+
+        <section class="kpis" id="kpiContainer"></section>
+
+        <section class="table-card">
+          <div class="table-head">
+            <div>
+              <h2>District Detail Table</h2>
+              <div class="sub">Missing values display as Not available. Policy links open in a new tab.</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>District</th>
+                  <th>County</th>
+                  <th>Minority Enrollment</th>
+                  <th>Below Poverty</th>
+                  <th>SNAP</th>
+                  <th>Student Population</th>
+                  <th>AI Policy</th>
+                  <th>Policy Label</th>
+                  <th>Policy Link</th>
+                </tr>
+              </thead>
+              <tbody id="districtTbody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

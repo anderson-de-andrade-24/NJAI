@@ -1,0 +1,265 @@
+:root {
+  --bg: #f3f6f4;
+  --surface: #ffffff;
+  --ink: #132125;
+  --muted: #5c6f73;
+  --accent: #0a7a86;
+  --accent-soft: #def2f5;
+  --grid: #dce4e1;
+  --ok-bg: #edf8f0;
+  --ok-border: #cae5d0;
+  --ok-text: #287f3b;
+  --warn-bg: #fdf5ea;
+  --warn-border: #f0dcc1;
+  --warn-text: #9b5a00;
+  --radius: 14px;
+  --shadow: 0 10px 28px rgba(16, 30, 34, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 10% 10%, #e6f3ef 0, transparent 30%),
+    radial-gradient(circle at 85% 20%, #fcefdc 0, transparent 35%),
+    var(--bg);
+}
+
+.site-nav {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 14px 18px 0;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  display: inline-block;
+  text-decoration: none;
+  color: #0d5159;
+  border: 1px solid #bfd6d2;
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: #eef7f6;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.site-nav a:hover {
+  background: #e4f2f1;
+}
+
+.site-nav a.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+  gap: 18px;
+  padding: 18px;
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid #e8efed;
+}
+
+.filters {
+  padding: 16px;
+  position: sticky;
+  top: 18px;
+  height: fit-content;
+}
+
+.content {
+  overflow: hidden;
+}
+
+.top {
+  padding: 18px;
+  border-bottom: 1px solid var(--grid);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+h2 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+.pill {
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  color: #0d5a62;
+  background: var(--accent-soft);
+  border: 1px solid #bfe3e9;
+}
+
+.control {
+  margin: 12px 0;
+}
+
+.control label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+input[type="text"],
+select {
+  width: 100%;
+  border: 1px solid #cfddda;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.93rem;
+  background: #fff;
+  color: var(--ink);
+}
+
+button {
+  width: 100%;
+  border: 1px solid #bfd6d2;
+  border-radius: 10px;
+  padding: 9px 12px;
+  background: #eef7f6;
+  color: #0e4f55;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:hover {
+  background: #e4f2f1;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 10px;
+  padding: 14px 18px 0;
+}
+
+.kpi {
+  background: #fafdfc;
+  border: 1px solid #e0ebe8;
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 82px;
+}
+
+.kpi .label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.kpi .value {
+  font-size: 1.55rem;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.table-card {
+  padding: 18px;
+}
+
+.table-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+
+.table-wrap {
+  overflow: auto;
+  border: 1px solid #e1ebe8;
+  border-radius: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+thead th {
+  text-align: left;
+  background: #f4f9f7;
+  color: #41585d;
+  padding: 9px;
+  border-bottom: 1px solid #dfebe7;
+  position: sticky;
+  top: 0;
+}
+
+tbody td {
+  padding: 8px 9px;
+  border-bottom: 1px solid #eff5f3;
+  vertical-align: top;
+}
+
+tbody tr:hover {
+  background: #fbfefd;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 8px;
+  border: 1px solid #d8e6e3;
+  font-size: 0.76rem;
+}
+
+.badge.yes {
+  color: var(--ok-text);
+  border-color: var(--ok-border);
+  background: var(--ok-bg);
+}
+
+.badge.no {
+  color: var(--warn-text);
+  border-color: var(--warn-border);
+  background: var(--warn-bg);
+}
+
+a {
+  color: #005e74;
+}
+
+@media (max-width: 1050px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    position: static;
+  }
+}
