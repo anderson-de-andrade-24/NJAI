@@ -8,6 +8,8 @@ const state = {
   minorityBand: "all",
   povertyBand: "all",
   snapBand: "all",
+  sortKey: "district_name",
+  sortDirection: "asc",
 };
 
 const el = {
@@ -22,6 +24,7 @@ const el = {
   kpiContainer: document.getElementById("kpiContainer"),
   districtTbody: document.getElementById("districtTbody"),
   lastUpdated: document.getElementById("lastUpdated"),
+  sortButtons: Array.from(document.querySelectorAll(".sort-button")),
 };
 
 const fmtInt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
@@ -77,7 +80,7 @@ function band(value, type) {
 }
 
 function filteredRecords() {
-  return payload.records.filter((record) => {
+  const rows = payload.records.filter((record) => {
     if (
       state.districtSearch &&
       !record.district_name.toLowerCase().includes(state.districtSearch.toLowerCase())
@@ -96,6 +99,47 @@ function filteredRecords() {
     }
     if (state.snapBand !== "all" && band(record.snap, "snap") !== state.snapBand) return false;
     return true;
+  });
+
+  return rows.sort(compareRecords);
+}
+
+function compareValues(left, right, type = "text") {
+  if (type === "number") return left - right;
+  if (type === "boolean") return Number(left) - Number(right);
+  return String(left).localeCompare(String(right), undefined, { numeric: true, sensitivity: "base" });
+}
+
+function compareRecords(left, right) {
+  const key = state.sortKey;
+  const direction = state.sortDirection === "asc" ? 1 : -1;
+  const leftMissing = left[key] === null || left[key] === undefined || left[key] === "";
+  const rightMissing = right[key] === null || right[key] === undefined || right[key] === "";
+
+  if (leftMissing && rightMissing) {
+    return left.district_name.localeCompare(right.district_name);
+  }
+  if (leftMissing) return 1;
+  if (rightMissing) return -1;
+
+  const sortType =
+    key === "minority_enrollment" || key === "below_poverty" || key === "snap" || key === "population"
+      ? "number"
+      : key === "has_ai_policy"
+        ? "boolean"
+        : "text";
+
+  const primary = compareValues(left[key], right[key], sortType);
+  if (primary !== 0) return primary * direction;
+  return left.district_name.localeCompare(right.district_name) * direction;
+}
+
+function updateSortButtons() {
+  el.sortButtons.forEach((button) => {
+    const isActive = button.dataset.sort === state.sortKey;
+    button.classList.toggle("active", isActive);
+    const arrow = isActive ? (state.sortDirection === "asc" ? " ↑" : " ↓") : "";
+    button.textContent = `${button.dataset.label || button.textContent.replace(/ [↑↓]$/, "")}${arrow}`;
   });
 }
 
@@ -128,7 +172,7 @@ function policyBadge(flag) {
 }
 
 function renderTable(records) {
-  const sorted = [...records].sort((a, b) => a.district_name.localeCompare(b.district_name)).slice(0, 300);
+  const sorted = records.slice(0, 300);
   el.districtTbody.innerHTML =
     sorted
       .map(
@@ -152,6 +196,7 @@ function renderTable(records) {
 
 function renderAll() {
   const rows = filteredRecords();
+  updateSortButtons();
   renderKPIs(rows);
   renderTable(rows);
 }
@@ -193,6 +238,8 @@ function wireEvents() {
     state.minorityBand = "all";
     state.povertyBand = "all";
     state.snapBand = "all";
+    state.sortKey = "district_name";
+    state.sortDirection = "asc";
 
     el.districtSearch.value = "";
     el.countySelect.value = "all";
@@ -203,6 +250,20 @@ function wireEvents() {
     el.snapSelect.value = "all";
     state.districtSearch = "";
     renderAll();
+  });
+
+  el.sortButtons.forEach((button) => {
+    button.dataset.label = button.textContent;
+    button.addEventListener("click", () => {
+      const clickedKey = button.dataset.sort;
+      if (state.sortKey === clickedKey) {
+        state.sortDirection = state.sortDirection === "asc" ? "desc" : "asc";
+      } else {
+        state.sortKey = clickedKey;
+        state.sortDirection = clickedKey === "district_name" || clickedKey === "county" ? "asc" : "desc";
+      }
+      renderAll();
+    });
   });
 }
 
