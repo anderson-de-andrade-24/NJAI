@@ -4,31 +4,34 @@ const state = {
   districtSearch: "",
   county: "all",
   hasPolicy: "all",
-  sizeClass: "all",
-  minorityBand: "all",
-  povertyBand: "all",
-  snapBand: "all",
+  districtType: "all",
+  urbanicity: "all",
+  enrollmentBand: "all",
+  frplBand: "all",
+  multilingualBand: "all",
   sortKey: "district_name",
   sortDirection: "asc",
+  selectedDistrict: "",
 };
 
 const el = {
   districtSearch: document.getElementById("districtSearch"),
   countySelect: document.getElementById("countySelect"),
   policySelect: document.getElementById("policySelect"),
-  sizeSelect: document.getElementById("sizeSelect"),
-  minoritySelect: document.getElementById("minoritySelect"),
-  povertySelect: document.getElementById("povertySelect"),
-  snapSelect: document.getElementById("snapSelect"),
+  districtTypeSelect: document.getElementById("districtTypeSelect"),
+  urbanicitySelect: document.getElementById("urbanicitySelect"),
+  enrollmentSelect: document.getElementById("enrollmentSelect"),
+  frplSelect: document.getElementById("frplSelect"),
+  multilingualSelect: document.getElementById("multilingualSelect"),
   resetBtn: document.getElementById("resetBtn"),
   kpiContainer: document.getElementById("kpiContainer"),
+  detailPanel: document.getElementById("detailPanel"),
   districtTbody: document.getElementById("districtTbody"),
   lastUpdated: document.getElementById("lastUpdated"),
   sortButtons: Array.from(document.querySelectorAll(".sort-button")),
 };
 
 const fmtInt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
-
 let payload = { summary: {}, records: [] };
 
 function unique(values) {
@@ -63,20 +66,59 @@ function formatPopulation(value) {
   return fmtInt.format(value);
 }
 
-function band(value, type) {
+function formatDate(value) {
+  if (!value) return "Not available";
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return safeText(value);
+  return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+}
+
+function badge(flag, yesLabel = "Yes", noLabel = "No") {
+  return `<span class="badge ${flag ? "yes" : "no"}">${flag ? yesLabel : noLabel}</span>`;
+}
+
+function detailMetric(label, value) {
+  return `<div class="metric"><span>${label}</span><strong>${value}</strong></div>`;
+}
+
+function rowsForBreakdown(items) {
+  return Object.values(items || {})
+    .map(
+      (item) => `
+        <tr>
+          <td>${item.label}</td>
+          <td>${formatPopulation(item.count)}</td>
+          <td>${formatPercent(item.percent)}</td>
+        </tr>
+      `,
+    )
+    .join("");
+}
+
+function percentBand(value, thresholds) {
   if (value === null || value === undefined) return "missing";
   const percent = value * 100;
-  if (type === "minority") {
-    if (percent < 25) return "Under 25%";
-    if (percent < 50) return "25% to 49.9%";
-    return "50% and above";
+  if (percent < thresholds[0]) return `Under ${thresholds[0]}%`;
+  if (percent < thresholds[1]) return `${thresholds[0]}% to ${thresholds[1] - 0.1}%`;
+  return `${thresholds[1]}% and above`;
+}
+
+function enrollmentBand(value) {
+  if (value === null || value === undefined) return "missing";
+  if (value < 1000) return "Under 1,000";
+  if (value < 5000) return "1,000 to 4,999";
+  if (value < 10000) return "5,000 to 9,999";
+  return "10,000 and above";
+}
+
+function getSelectedRecord(records) {
+  if (!records.length) return null;
+  if (state.selectedDistrict) {
+    const found = records.find((record) => record.district_name === state.selectedDistrict);
+    if (found) return found;
   }
-  if (type === "poverty" || type === "snap") {
-    if (percent < 10) return "Under 10%";
-    if (percent < 20) return "10% to 19.9%";
-    return "20% and above";
-  }
-  return "missing";
+  state.selectedDistrict = records[0].district_name;
+  return records[0];
 }
 
 function filteredRecords() {
@@ -90,14 +132,20 @@ function filteredRecords() {
     if (state.county !== "all" && record.county !== state.county) return false;
     if (state.hasPolicy === "yes" && !record.has_ai_policy) return false;
     if (state.hasPolicy === "no" && record.has_ai_policy) return false;
-    if (state.sizeClass !== "all" && record.district_size_class !== state.sizeClass) return false;
-    if (state.minorityBand !== "all" && band(record.minority_enrollment, "minority") !== state.minorityBand) {
+    if (state.districtType !== "all" && record.district_type_label !== state.districtType) return false;
+    if (state.urbanicity !== "all" && safeText(record.urbanicity) !== state.urbanicity) return false;
+    if (state.enrollmentBand !== "all" && enrollmentBand(record.total_enrollment) !== state.enrollmentBand) {
       return false;
     }
-    if (state.povertyBand !== "all" && band(record.below_poverty, "poverty") !== state.povertyBand) {
+    if (state.frplBand !== "all" && percentBand(record.frpl_percent, [25, 50]) !== state.frplBand) {
       return false;
     }
-    if (state.snapBand !== "all" && band(record.snap, "snap") !== state.snapBand) return false;
+    if (
+      state.multilingualBand !== "all" &&
+      percentBand(record.multilingual_percent, [5, 15]) !== state.multilingualBand
+    ) {
+      return false;
+    }
     return true;
   });
 
@@ -116,14 +164,18 @@ function compareRecords(left, right) {
   const leftMissing = left[key] === null || left[key] === undefined || left[key] === "";
   const rightMissing = right[key] === null || right[key] === undefined || right[key] === "";
 
-  if (leftMissing && rightMissing) {
-    return left.district_name.localeCompare(right.district_name);
-  }
+  if (leftMissing && rightMissing) return left.district_name.localeCompare(right.district_name);
   if (leftMissing) return 1;
   if (rightMissing) return -1;
 
   const sortType =
-    key === "minority_enrollment" || key === "below_poverty" || key === "snap" || key === "population"
+    [
+      "total_enrollment",
+      "students_of_color_percent",
+      "frpl_percent",
+      "multilingual_percent",
+      "urbanicity_score",
+    ].includes(key)
       ? "number"
       : key === "has_ai_policy"
         ? "boolean"
@@ -138,21 +190,28 @@ function updateSortButtons() {
   el.sortButtons.forEach((button) => {
     const isActive = button.dataset.sort === state.sortKey;
     button.classList.toggle("active", isActive);
+    const label = button.dataset.label || button.textContent.replace(/ [↑↓]$/, "");
     const arrow = isActive ? (state.sortDirection === "asc" ? " ↑" : " ↓") : "";
-    button.textContent = `${button.dataset.label || button.textContent.replace(/ [↑↓]$/, "")}${arrow}`;
+    button.textContent = `${label}${arrow}`;
   });
 }
 
 function renderKPIs(records) {
   const withPolicy = records.filter((record) => record.has_ai_policy).length;
-  const withLabels = records.filter((record) => record.policy_label).length;
-  const counties = new Set(records.map((record) => record.county).filter(Boolean)).size;
+  const avgEnrollment = Math.round(
+    records.reduce((sum, record) => sum + (record.total_enrollment || 0), 0) / Math.max(records.length, 1),
+  );
+  const avgFRPL =
+    records.reduce((sum, record) => sum + (record.frpl_percent || 0), 0) / Math.max(records.length, 1);
+  const avgMLL =
+    records.reduce((sum, record) => sum + (record.multilingual_percent || 0), 0) / Math.max(records.length, 1);
 
   const cards = [
     { label: "Visible Districts", value: records.length },
     { label: "Has AI Policy", value: withPolicy },
-    { label: "Has Policy Label", value: withLabels },
-    { label: "Counties", value: counties },
+    { label: "Average Enrollment", value: formatPopulation(avgEnrollment) },
+    { label: "Average FRPL", value: formatPercent(avgFRPL) },
+    { label: "Average MLL", value: formatPercent(avgMLL) },
   ];
 
   el.kpiContainer.innerHTML = cards
@@ -167,31 +226,131 @@ function renderKPIs(records) {
     .join("");
 }
 
-function policyBadge(flag) {
-  return `<span class="badge ${flag ? "yes" : "no"}">${flag ? "Yes" : "No"}</span>`;
+function renderDetailPanel(record) {
+  if (!record) {
+    el.detailPanel.innerHTML = `
+      <div class="empty-state">
+        <h3>No districts match the current filters</h3>
+        <p>Relax a filter or search term to bring district detail back into view.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const timeline = record.policy_dates?.length
+    ? record.policy_dates.map(formatDate).join(", ")
+    : "Not available";
+
+  el.detailPanel.innerHTML = `
+    <article class="detail-card">
+      <div class="detail-top">
+        <div>
+          <h3>${record.district_name}</h3>
+          <p>${safeText(record.county)} County • ${safeText(record.district_type_label)}</p>
+        </div>
+        <div class="badge-row">
+          ${badge(record.has_ai_policy, "AI Policy", "No AI Policy")}
+          ${badge(record.has_se_policy, "SE Listed", "No SE")}
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        ${detailMetric("Enrollment", formatPopulation(record.total_enrollment))}
+        ${detailMetric("Students of Color", formatPercent(record.students_of_color_percent))}
+        ${detailMetric("FRPL", formatPercent(record.frpl_percent))}
+        ${detailMetric("MLL", formatPercent(record.multilingual_percent))}
+        ${detailMetric("Schools", formatPopulation(record.number_of_schools))}
+        ${detailMetric("Urbanicity", safeText(record.urbanicity))}
+        ${detailMetric("Policy Number", safeText(record.policy_number))}
+        ${detailMetric("Policy Adopted", formatDate(record.policy_adopted))}
+      </div>
+    </article>
+
+    <div class="detail-sections">
+      <details class="detail-card accordion" open>
+        <summary>Policy & Profile</summary>
+        <div class="compact-grid">
+          ${detailMetric("County Code", safeText(record.county_code))}
+          ${detailMetric("District Code", safeText(record.district_code))}
+          ${detailMetric("Policy Timeline", timeline)}
+          ${detailMetric("Urbanicity Score", safeText(record.urbanicity_score))}
+          ${detailMetric("Serves PK-8", record.district_profile?.serves_primary ? "Yes" : "No")}
+          ${detailMetric("Serves 9-12", record.district_profile?.serves_secondary ? "Yes" : "No")}
+          ${detailMetric("Unified", record.district_profile?.serves_unified ? "Yes" : "No")}
+        </div>
+        <div class="action-row">
+          ${
+            record.policy_link
+              ? `<a href="${record.policy_link}" target="_blank" rel="noopener noreferrer">Open policy document</a>`
+              : "<span>Policy document not available</span>"
+          }
+        </div>
+      </details>
+
+      <details class="detail-card accordion">
+        <summary>Race Composition</summary>
+        <div class="table-scroll">
+          <table class="mini-table">
+            <thead><tr><th>Category</th><th>Count</th><th>Percent</th></tr></thead>
+            <tbody>${rowsForBreakdown(record.race_breakdown)}</tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="detail-card accordion">
+        <summary>Grade Distribution</summary>
+        <div class="table-scroll">
+          <table class="mini-table">
+            <thead><tr><th>Grade</th><th>Count</th><th>Percent</th></tr></thead>
+            <tbody>${rowsForBreakdown(record.grade_breakdown)}</tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="detail-card accordion">
+        <summary>Student Support Indicators</summary>
+        <div class="table-scroll">
+          <table class="mini-table">
+            <thead><tr><th>Indicator</th><th>Count</th><th>Percent</th></tr></thead>
+            <tbody>${rowsForBreakdown(record.student_support)}</tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  `;
 }
 
 function renderTable(records) {
-  const sorted = records.slice(0, 300);
+  const selected = getSelectedRecord(records);
+  renderDetailPanel(selected);
+
   el.districtTbody.innerHTML =
-    sorted
+    records
       .map(
         (record) => `
-          <tr>
+          <tr class="${record.district_name === state.selectedDistrict ? "is-selected" : ""}">
             <td><strong>${safeText(record.district_name)}</strong></td>
             <td>${safeText(record.county)}</td>
-            <td>${formatPercent(record.minority_enrollment)}</td>
-            <td>${formatPercent(record.below_poverty)}</td>
-            <td>${formatPercent(record.snap)}</td>
-            <td>${formatPopulation(record.population)}</td>
-            <td>${policyBadge(record.has_ai_policy)}</td>
-            <td>${safeText(record.policy_label)}</td>
-            <td>${record.policy_link ? `<a href="${record.policy_link}" target="_blank" rel="noopener noreferrer">Open policy</a>` : "Not available"}</td>
+            <td>${safeText(record.district_type_label)}</td>
+            <td>${formatPopulation(record.total_enrollment)}</td>
+            <td>${badge(record.has_ai_policy)}</td>
+            <td>${formatPercent(record.students_of_color_percent)}</td>
+            <td>${formatPercent(record.frpl_percent)}</td>
+            <td>${formatPercent(record.multilingual_percent)}</td>
+            <td>${safeText(record.urbanicity)}</td>
+            <td><button class="row-action" type="button" data-district="${record.district_name}">Details</button></td>
           </tr>
         `,
       )
       .join("") ||
-    `<tr><td colspan="9" style="text-align:center; color:#5c6f73;">No districts match current filters.</td></tr>`;
+    `<tr><td colspan="10" class="empty-cell">No districts match current filters.</td></tr>`;
+
+  Array.from(document.querySelectorAll(".row-action")).forEach((button) => {
+    button.addEventListener("click", () => {
+      state.selectedDistrict = button.dataset.district || "";
+      renderAll();
+    });
+  });
 }
 
 function renderAll() {
@@ -214,41 +373,47 @@ function wireEvents() {
     state.hasPolicy = el.policySelect.value;
     renderAll();
   });
-  el.sizeSelect.addEventListener("change", () => {
-    state.sizeClass = el.sizeSelect.value;
+  el.districtTypeSelect.addEventListener("change", () => {
+    state.districtType = el.districtTypeSelect.value;
     renderAll();
   });
-  el.minoritySelect.addEventListener("change", () => {
-    state.minorityBand = el.minoritySelect.value;
+  el.urbanicitySelect.addEventListener("change", () => {
+    state.urbanicity = el.urbanicitySelect.value;
     renderAll();
   });
-  el.povertySelect.addEventListener("change", () => {
-    state.povertyBand = el.povertySelect.value;
+  el.enrollmentSelect.addEventListener("change", () => {
+    state.enrollmentBand = el.enrollmentSelect.value;
     renderAll();
   });
-  el.snapSelect.addEventListener("change", () => {
-    state.snapBand = el.snapSelect.value;
+  el.frplSelect.addEventListener("change", () => {
+    state.frplBand = el.frplSelect.value;
+    renderAll();
+  });
+  el.multilingualSelect.addEventListener("change", () => {
+    state.multilingualBand = el.multilingualSelect.value;
     renderAll();
   });
   el.resetBtn.addEventListener("click", () => {
-    state.districtSearch = "all";
+    state.districtSearch = "";
     state.county = "all";
     state.hasPolicy = "all";
-    state.sizeClass = "all";
-    state.minorityBand = "all";
-    state.povertyBand = "all";
-    state.snapBand = "all";
+    state.districtType = "all";
+    state.urbanicity = "all";
+    state.enrollmentBand = "all";
+    state.frplBand = "all";
+    state.multilingualBand = "all";
     state.sortKey = "district_name";
     state.sortDirection = "asc";
+    state.selectedDistrict = "";
 
     el.districtSearch.value = "";
     el.countySelect.value = "all";
     el.policySelect.value = "all";
-    el.sizeSelect.value = "all";
-    el.minoritySelect.value = "all";
-    el.povertySelect.value = "all";
-    el.snapSelect.value = "all";
-    state.districtSearch = "";
+    el.districtTypeSelect.value = "all";
+    el.urbanicitySelect.value = "all";
+    el.enrollmentSelect.value = "all";
+    el.frplSelect.value = "all";
+    el.multilingualSelect.value = "all";
     renderAll();
   });
 
@@ -277,13 +442,14 @@ async function initialize() {
 
   buildSelect(el.countySelect, unique(payload.records.map((record) => record.county)), "All counties");
   buildSelect(
-    el.sizeSelect,
-    unique(payload.records.map((record) => record.district_size_class)),
-    "All sizes",
+    el.districtTypeSelect,
+    unique(payload.records.map((record) => record.district_type_label)),
+    "All district types",
   );
-  buildSelect(el.minoritySelect, ["Under 25%", "25% to 49.9%", "50% and above", "missing"], "All values");
-  buildSelect(el.povertySelect, ["Under 10%", "10% to 19.9%", "20% and above", "missing"], "All values");
-  buildSelect(el.snapSelect, ["Under 10%", "10% to 19.9%", "20% and above", "missing"], "All values");
+  buildSelect(el.urbanicitySelect, unique(payload.records.map((record) => safeText(record.urbanicity))), "All urbanicity");
+  buildSelect(el.enrollmentSelect, ["Under 1,000", "1,000 to 4,999", "5,000 to 9,999", "10,000 and above", "missing"], "All sizes");
+  buildSelect(el.frplSelect, ["Under 25%", "25% to 49.9%", "50% and above", "missing"], "All values");
+  buildSelect(el.multilingualSelect, ["Under 5%", "5% to 14.9%", "15% and above", "missing"], "All values");
 
   el.lastUpdated.textContent = `Updated ${payload.summary.generated_at || "Not available"}`;
   wireEvents();

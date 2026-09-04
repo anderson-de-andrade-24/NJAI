@@ -1,31 +1,30 @@
 # Site v2
 
-This version keeps the original site intact and builds a separate map/dashboard pair from the finalized workbook:
+This site now reads the district-level 2025-2026 workbook and builds a self-contained static map plus dashboard experience.
 
-- Source workbook: `Copy of NJ AI Policies Schools List (3-30).xlsx`
-- Build script: `site_v2/build_site.py`
-- Self-contained static site folder: `site_v2/`
-- Output dataset: `site_v2/data/district_dataset.json`
-- Output CSV: `site_v2/data/district_dataset.csv`
-- Copied map boundaries: `site_v2/data/nj-school-districts.geojson`
+- Source workbook default: `~/Downloads/5-25_with_ai_policy (1).xlsx`
+- Override workbook path: set `NJAI_WORKBOOK=/full/path/to/workbook.xlsx`
+- Build script: `build_site.py`
+- Output dataset: `data/district_dataset.json`
+- Output CSV: `data/district_dataset.csv`
+- Map boundaries: `data/nj-school-districts.geojson`
 
-Policy label rule:
-- Prefer the unlabeled workbook column immediately after `Relevant AI Policy Documents`
-- Fall back to extracting labels from policy URLs or text such as `policyid=5701` or AI-policy filenames with numbers
+The generated dataset keeps the table views compact while preserving richer sections for:
+
+- policy and revision dates
+- race composition
+- grade distribution
+- student support indicators such as FRPL, multilingual learners, migrant, military, and homeless
+- district profile fields such as urbanicity, school count, and district type
 
 Run:
 
 ```bash
-python3 "/Users/anderson/Desktop/AI Policies folder/site_v2/build_site.py"
-cd "/Users/anderson/Desktop/AI Policies folder" && python3 -m http.server 8000
+python3 build_site.py
+python3 -m http.server 8000
 ```
 
 Then open:
 
-- `http://localhost:8000/site_v2/`
-- `http://localhost:8000/site_v2/dashboard/`
-
-Public deployment:
-
-- `site_v2/` is now self-contained and can be deployed directly to any static host
-- A GitHub Pages workflow can publish this folder automatically from the repository
+- `http://localhost:8000/`
+- `http://localhost:8000/dashboard/`

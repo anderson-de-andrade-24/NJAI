@@ -1,15 +1,21 @@
 {
-  "generated_at": "2026-03-30 11:00",
-  "source_workbook": "Copy of NJ AI Policies Schools List (3-30).xlsx",
-  "record_count": 600,
-  "districts_with_ai_policy": 342,
-  "districts_with_policy_label": 298,
-  "star_cells_converted_to_missing": 354,
-  "demographic_non_missing_counts": {
-    "minority_enrollment": 550,
-    "below_poverty": 470,
-    "snap": 470,
-    "population": 561
+  "generated_at": "2026-09-04 16:34",
+  "source_workbook": "5-25_with_ai_policy (1).xlsx",
+  "record_count": 576,
+  "districts_with_ai_policy": 353,
+  "counties": 21,
+  "average_enrollment": 2234,
+  "district_type_counts": {
+    "unified": 270,
+    "secondary": 46,
+    "elementary": 260
   },
-  "policy_label_rule": "Policy labels prefer the unlabeled workbook column after 'Relevant AI Policy Documents', then fall back to label extraction from policy URLs/text such as policyid=5701 or filenames containing AI policy numbers."
+  "available_sections": [
+    "policy",
+    "overview",
+    "race_breakdown",
+    "grade_breakdown",
+    "student_support",
+    "district_profile"
+  ]
 }

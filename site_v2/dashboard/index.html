@@ -15,7 +15,7 @@
     <div class="layout">
       <aside class="panel filters">
         <h2>Filter & Search</h2>
-        <div class="sub">Search districts and filter by demographics and policy presence.</div>
+        <div class="sub">Search districts and filter the new 2025-2026 dataset without crowding the screen.</div>
 
         <div class="control">
           <label for="districtSearch">District Name</label>
@@ -37,23 +37,28 @@
         </div>
 
         <div class="control">
-          <label for="sizeSelect">District Size</label>
-          <select id="sizeSelect"></select>
+          <label for="districtTypeSelect">District Type</label>
+          <select id="districtTypeSelect"></select>
         </div>
 
         <div class="control">
-          <label for="minoritySelect">Minority Enrollment</label>
-          <select id="minoritySelect"></select>
+          <label for="urbanicitySelect">Urbanicity</label>
+          <select id="urbanicitySelect"></select>
         </div>
 
         <div class="control">
-          <label for="povertySelect">Below Poverty</label>
-          <select id="povertySelect"></select>
+          <label for="enrollmentSelect">Enrollment Size</label>
+          <select id="enrollmentSelect"></select>
         </div>
 
         <div class="control">
-          <label for="snapSelect">SNAP</label>
-          <select id="snapSelect"></select>
+          <label for="frplSelect">FRPL</label>
+          <select id="frplSelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="multilingualSelect">Multilingual Learners</label>
+          <select id="multilingualSelect"></select>
         </div>
 
         <div class="control">
@@ -65,18 +70,28 @@
         <div class="top">
           <div>
             <h1>NJ AI Policy Dashboard</h1>
-            <div class="sub">Source: Copy of NJ AI Policies Schools List (3-30).xlsx</div>
+            <div class="sub">Source: district-level 2025-2026 workbook with policy, race, grade, and student-support data.</div>
           </div>
           <div class="pill" id="lastUpdated"></div>
         </div>
 
         <section class="kpis" id="kpiContainer"></section>
 
+        <section class="detail-spotlight">
+          <div class="spotlight-head">
+            <div>
+              <h2>Selected District</h2>
+              <div class="sub">Use the table or filters to focus on a district, then review the organized detail here.</div>
+            </div>
+          </div>
+          <div id="detailPanel" class="detail-panel"></div>
+        </section>
+
         <section class="table-card">
           <div class="table-head">
             <div>
               <h2>District Detail Table</h2>
-              <div class="sub">Missing values display as Not available. Policy links open in a new tab.</div>
+              <div class="sub">Keep the table compact for scanning, then use Details for the full district profile.</div>
             </div>
           </div>
           <div class="table-wrap">
@@ -85,13 +100,14 @@
                 <tr>
                   <th><button class="sort-button" type="button" data-sort="district_name">District</button></th>
                   <th><button class="sort-button" type="button" data-sort="county">County</button></th>
-                  <th><button class="sort-button" type="button" data-sort="minority_enrollment">Minority Enrollment</button></th>
-                  <th><button class="sort-button" type="button" data-sort="below_poverty">Below Poverty</button></th>
-                  <th><button class="sort-button" type="button" data-sort="snap">SNAP</button></th>
-                  <th><button class="sort-button" type="button" data-sort="population">Student Population</button></th>
+                  <th><button class="sort-button" type="button" data-sort="district_type_label">Type</button></th>
+                  <th><button class="sort-button" type="button" data-sort="total_enrollment">Enrollment</button></th>
                   <th><button class="sort-button" type="button" data-sort="has_ai_policy">AI Policy</button></th>
-                  <th><button class="sort-button" type="button" data-sort="policy_label">Policy Label</button></th>
-                  <th><button class="sort-button" type="button" data-sort="policy_link">Policy Link</button></th>
+                  <th><button class="sort-button" type="button" data-sort="students_of_color_percent">Students of Color</button></th>
+                  <th><button class="sort-button" type="button" data-sort="frpl_percent">FRPL</button></th>
+                  <th><button class="sort-button" type="button" data-sort="multilingual_percent">MLL</button></th>
+                  <th><button class="sort-button" type="button" data-sort="urbanicity">Urbanicity</button></th>
+                  <th>Details</th>
                 </tr>
               </thead>
               <tbody id="districtTbody"></tbody>

@@ -47,6 +47,7 @@ const typeLabels = {
   U: "Unified",
   S: "Secondary",
   E: "Elementary",
+  UNK: "Not classified",
 };
 
 function canonicalizeName(name) {
@@ -95,6 +96,10 @@ function resolveRecord(districtName) {
   return null;
 }
 
+function safeText(value, fallback = "Not available") {
+  return value === null || value === undefined || value === "" ? fallback : String(value);
+}
+
 function formatPercent(value) {
   if (value === null || value === undefined || value === "") return "Not available";
   return `${(value * 100).toFixed(1)}%`;
@@ -105,20 +110,41 @@ function formatPopulation(value) {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
 }
 
-function safeText(value, fallback = "Not available") {
-  return value === null || value === undefined || value === "" ? fallback : String(value);
+function formatDate(value) {
+  if (!value) return "Not available";
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return safeText(value);
+  return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
-function yesNoPill(flag) {
-  return `<span class="pill ${flag ? "yes" : "no"}">${flag ? "Yes" : "No"}</span>`;
+function yesNoPill(flag, yesLabel = "Yes", noLabel = "No") {
+  return `<span class="pill ${flag ? "yes" : "no"}">${flag ? yesLabel : noLabel}</span>`;
+}
+
+function detailItem(label, value) {
+  return `<div class="detail-item"><strong>${label}</strong>${value}</div>`;
+}
+
+function tableRows(items, countKey = "count", percentKey = "percent") {
+  return Object.values(items)
+    .map(
+      (item) => `
+        <tr>
+          <td>${item.label}</td>
+          <td>${formatPopulation(item[countKey])}</td>
+          <td>${formatPercent(item[percentKey])}</td>
+        </tr>
+      `,
+    )
+    .join("");
 }
 
 function renderCounts() {
   const matchedToMap = allDistricts?.features?.length || 0;
   counts.innerHTML = `
-    <strong>District records:</strong> ${summary.record_count || records.length}<br />
+    <strong>Districts:</strong> ${summary.record_count || records.length}<br />
     <strong>With AI policy:</strong> ${summary.districts_with_ai_policy || 0}<br />
-    <strong>With policy label:</strong> ${summary.districts_with_policy_label || 0}<br />
+    <strong>Average enrollment:</strong> ${formatPopulation(summary.average_enrollment)}<br />
     <strong>Map polygons:</strong> ${matchedToMap}
   `;
 }
@@ -133,17 +159,17 @@ function popupHtml(districtName, record, districtType) {
   }
 
   const link = record.policy_link
-    ? `<a href="${record.policy_link}" target="_blank" rel="noopener noreferrer">Open policy link</a>`
+    ? `<a href="${record.policy_link}" target="_blank" rel="noopener noreferrer">Open policy</a>`
     : "Not available";
 
   return `
     <div class="popup-title">${record.district_name}</div>
     <div class="popup-row"><strong>County:</strong> ${safeText(record.county)}</div>
-    <div class="popup-row"><strong>Minority enrollment:</strong> ${formatPercent(record.minority_enrollment)}</div>
-    <div class="popup-row"><strong>Below poverty:</strong> ${formatPercent(record.below_poverty)}</div>
-    <div class="popup-row"><strong>SNAP:</strong> ${formatPercent(record.snap)}</div>
+    <div class="popup-row"><strong>Enrollment:</strong> ${formatPopulation(record.total_enrollment)}</div>
     <div class="popup-row"><strong>AI policy:</strong> ${record.has_ai_policy ? "Yes" : "No"}</div>
-    <div class="popup-row"><strong>Policy label:</strong> ${safeText(record.policy_label)}</div>
+    <div class="popup-row"><strong>Policy number:</strong> ${safeText(record.policy_number)}</div>
+    <div class="popup-row"><strong>Students of color:</strong> ${formatPercent(record.students_of_color_percent)}</div>
+    <div class="popup-row"><strong>FRPL:</strong> ${formatPercent(record.frpl_percent)}</div>
     <div class="popup-row"><strong>Policy link:</strong> ${link}</div>
   `;
 }
@@ -156,29 +182,97 @@ function renderDistrictDetails(districtName, record, districtType) {
     panelContent.innerHTML = `
       <div class="detail-card">
         <h3>Available data</h3>
-        <p>This district boundary is present, but the merged workbook record was not matched.</p>
+        <p>This district boundary is present, but the workbook record was not matched.</p>
       </div>
     `;
     return;
   }
 
-  panelSubtitle.textContent = `${typeLabels[districtType] || districtType || "District"} district`;
+  const policyDates = record.policy_dates?.length
+    ? record.policy_dates.map(formatDate).join(", ")
+    : "Not available";
+
+  panelSubtitle.textContent = `${record.district_type_label || typeLabels[districtType] || "District"} district`;
   panelContent.innerHTML = `
-    <article class="detail-card">
-      <h3>${record.district_name}</h3>
+    <article class="detail-card hero-card">
+      <div class="hero-top">
+        <div>
+          <h3>${record.district_name}</h3>
+          <p>${safeText(record.county)} County</p>
+        </div>
+        <div class="hero-pills">
+          ${yesNoPill(record.has_ai_policy, "AI Policy", "No AI Policy")}
+          ${yesNoPill(record.has_se_policy, "SE Listed", "No SE")}
+        </div>
+      </div>
       <div class="detail-grid">
-        <div class="detail-item"><strong>County</strong>${safeText(record.county)}</div>
-        <div class="detail-item"><strong>AI Policy</strong>${yesNoPill(record.has_ai_policy)}</div>
-        <div class="detail-item"><strong>Minority Enrollment</strong>${formatPercent(record.minority_enrollment)}</div>
-        <div class="detail-item"><strong>Below Poverty</strong>${formatPercent(record.below_poverty)}</div>
-        <div class="detail-item"><strong>SNAP</strong>${formatPercent(record.snap)}</div>
-        <div class="detail-item"><strong>Student Population</strong>${formatPopulation(record.population)}</div>
-        <div class="detail-item"><strong>District Size</strong>${safeText(record.district_size_class)}</div>
-        <div class="detail-item"><strong>Policy Label</strong>${safeText(record.policy_label)}</div>
-        <div class="detail-item"><strong>Policy Link</strong>${record.policy_link ? `<a href="${record.policy_link}" target="_blank" rel="noopener noreferrer">Open policy</a>` : "Not available"}</div>
-        <div class="detail-item"><strong>District Website</strong>${record.district_website ? `<a href="${record.district_website}" target="_blank" rel="noopener noreferrer">Open website</a>` : "Not available"}</div>
+        ${detailItem("Enrollment", formatPopulation(record.total_enrollment))}
+        ${detailItem("District Type", safeText(record.district_type_label))}
+        ${detailItem("Schools", formatPopulation(record.number_of_schools))}
+        ${detailItem("Urbanicity", safeText(record.urbanicity))}
+        ${detailItem("Students of Color", formatPercent(record.students_of_color_percent))}
+        ${detailItem("FRPL", formatPercent(record.frpl_percent))}
+        ${detailItem("Multilingual Learners", formatPercent(record.multilingual_percent))}
+        ${detailItem("Policy Number", safeText(record.policy_number))}
       </div>
     </article>
+
+    <details class="detail-card accordion" open>
+      <summary>Policy & District Profile</summary>
+      <div class="detail-grid">
+        ${detailItem("County Code", safeText(record.county_code))}
+        ${detailItem("District Code", safeText(record.district_code))}
+        ${detailItem("Adopted", formatDate(record.policy_adopted))}
+        ${detailItem("Policy Timeline", policyDates)}
+        ${detailItem("Serves PK-8", yesNoPill(record.district_profile?.serves_primary))}
+        ${detailItem("Serves 9-12", yesNoPill(record.district_profile?.serves_secondary))}
+        ${detailItem("Unified", yesNoPill(record.district_profile?.serves_unified))}
+        ${detailItem("Urbanicity Score", safeText(record.urbanicity_score))}
+      </div>
+      <div class="link-row">
+        ${
+          record.policy_link
+            ? `<a href="${record.policy_link}" target="_blank" rel="noopener noreferrer">Open policy document</a>`
+            : "<span>Policy document not available</span>"
+        }
+      </div>
+    </details>
+
+    <details class="detail-card accordion">
+      <summary>Race Composition</summary>
+      <div class="table-block">
+        <table class="mini-table">
+          <thead>
+            <tr><th>Category</th><th>Count</th><th>Percent</th></tr>
+          </thead>
+          <tbody>${tableRows(record.race_breakdown || {})}</tbody>
+        </table>
+      </div>
+    </details>
+
+    <details class="detail-card accordion">
+      <summary>Grade Distribution</summary>
+      <div class="table-block">
+        <table class="mini-table">
+          <thead>
+            <tr><th>Grade</th><th>Count</th><th>Percent</th></tr>
+          </thead>
+          <tbody>${tableRows(record.grade_breakdown || {})}</tbody>
+        </table>
+      </div>
+    </details>
+
+    <details class="detail-card accordion">
+      <summary>Student Support Indicators</summary>
+      <div class="table-block">
+        <table class="mini-table">
+          <thead>
+            <tr><th>Indicator</th><th>Count</th><th>Percent</th></tr>
+          </thead>
+          <tbody>${tableRows(record.student_support || {})}</tbody>
+        </table>
+      </div>
+    </details>
   `;
 }
 
@@ -207,8 +301,13 @@ function setLayerState(layer, selected = false, hovered = false) {
 
 function resetPanel() {
   panelTitle.textContent = "Select a district";
-  panelSubtitle.textContent = "Hover over a district to preview demographics and policy details.";
-  panelContent.innerHTML = "";
+  panelSubtitle.textContent = "Hover over a district to preview high-level data, then click to explore full district details.";
+  panelContent.innerHTML = `
+    <div class="detail-card">
+      <h3>What’s new in this view</h3>
+      <p>The map now uses the 2025-2026 district workbook and keeps richer race, grade, and student-support data behind expandable sections.</p>
+    </div>
+  `;
 }
 
 function clearSelection() {
@@ -280,7 +379,7 @@ function renderGeoLayer() {
 
   if (geoLayer.getLayers().length) map.fitBounds(geoLayer.getBounds(), { padding: [10, 10] });
   mapHint.textContent =
-    "Hover for preview, click to lock selection and open a popup. Use district type to switch map layers.";
+    "Hover to preview, click to lock a district, and expand the side-panel sections for full workbook detail.";
   resetPanel();
 }
 
@@ -308,9 +407,8 @@ function wireSearch() {
 
     const record = records.find((item) => normalizeName(item.district_name).includes(needle));
     if (!record) return;
-    panelTitle.textContent = record.district_name;
-    panelSubtitle.textContent = "Matched record without polygon selection";
-    renderDistrictDetails(record.district_name, record, "District");
+    renderDistrictDetails(record.district_name, record, record.district_type);
+    panelSubtitle.textContent = "Matched workbook record without polygon selection";
   });
 
   districtTypeSelect.addEventListener("change", () => {

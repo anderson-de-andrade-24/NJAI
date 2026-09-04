@@ -21,17 +21,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install build dependency
-        run: pip install openpyxl
-
-      - name: Build static site
-        run: python site_v2/build_site.py
-
       - name: Add .nojekyll
         run: touch site_v2/.nojekyll
 
