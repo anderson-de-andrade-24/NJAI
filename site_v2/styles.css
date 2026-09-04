@@ -1,15 +1,15 @@
 :root {
-  --bg: #f2f5ea;
-  --surface: rgba(255, 255, 255, 0.95);
-  --surface-soft: #f8fbf4;
-  --ink: #1f2a1f;
-  --muted: #5f6c5f;
-  --accent: #1d6f42;
-  --accent-deep: #0f4d2b;
-  --accent-soft: #d7ebdd;
-  --border: #cdd6c8;
-  --link: #004a85;
-  --shadow: 0 18px 36px rgba(31, 42, 31, 0.08);
+  --bg: #f6f3f4;
+  --surface: rgba(255, 255, 255, 0.96);
+  --surface-soft: #fff8fa;
+  --ink: #111111;
+  --muted: #5f6a72;
+  --accent: #cc0033;
+  --accent-deep: #97002a;
+  --accent-soft: #f6d7df;
+  --border: #d7c7cc;
+  --link: #cc0033;
+  --shadow: 0 18px 36px rgba(17, 17, 17, 0.08);
 }
 
 * {
@@ -21,9 +21,9 @@ body {
   font-family: "Source Sans 3", "Segoe UI", sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(circle at 8% 15%, #e8f3d5 0, transparent 35%),
-    radial-gradient(circle at 95% 95%, #c8e6d0 0, transparent 28%),
-    linear-gradient(180deg, #f7faef 0%, #eef4ea 100%);
+    radial-gradient(circle at 10% 12%, rgba(204, 0, 51, 0.11) 0, transparent 30%),
+    radial-gradient(circle at 92% 88%, rgba(95, 106, 114, 0.11) 0, transparent 26%),
+    linear-gradient(180deg, #fff7f9 0%, #f4f1f2 100%);
 }
 
 .site-nav {
@@ -37,16 +37,16 @@ body {
 .site-nav a {
   display: inline-block;
   text-decoration: none;
-  color: #14492b;
+  color: #111111;
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0.35rem 0.8rem;
-  background: #f9fcf7;
+  background: #fff8fa;
   font-weight: 600;
 }
 
 .site-nav a:hover {
-  background: #edf6eb;
+  background: #f9e8ed;
 }
 
 .site-nav a.is-active {
@@ -60,30 +60,14 @@ body {
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 1.2rem;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.78);
+  border-bottom: 2px solid var(--accent);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
 }
 
 .topbar h1 {
   margin: 0;
-  font-size: 1.5rem;
-}
-
-.topbar p {
-  margin: 0.3rem 0 0;
-  color: var(--muted);
-  max-width: 48rem;
-}
-
-.counts {
-  min-width: 260px;
-  padding: 0.8rem;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  font-size: 0.92rem;
+  font-size: 1.75rem;
 }
 
 .layout {
@@ -108,7 +92,7 @@ body {
   padding: 0.8rem;
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.84);
   backdrop-filter: blur(8px);
 }
 
@@ -194,7 +178,7 @@ button:hover {
 
 .hero-card {
   background:
-    radial-gradient(circle at top right, rgba(215, 235, 221, 0.95), transparent 32%),
+    radial-gradient(circle at top right, rgba(204, 0, 51, 0.12), transparent 32%),
     var(--surface-soft);
 }
 
@@ -258,19 +242,19 @@ button:hover {
   border-radius: 999px;
   border: 1px solid var(--border);
   font-size: 0.8rem;
-  background: #f4f8f2;
+  background: #fff4f7;
 }
 
 .pill.yes {
-  background: #e4f3e7;
-  border-color: #b9d8bf;
-  color: #155732;
+  background: #f9d9e2;
+  border-color: #efb7c8;
+  color: #97002a;
 }
 
 .pill.no {
-  background: #f7efe5;
-  border-color: #e4ccb0;
-  color: #8b5a19;
+  background: #f1f0f1;
+  border-color: #d0c9cc;
+  color: #4f555a;
 }
 
 .accordion summary {
@@ -323,6 +307,52 @@ button:hover {
   letter-spacing: 0.03em;
 }
 
+.site-credit {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 900;
+  max-width: 520px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.credit-logo {
+  width: 88px;
+  height: auto;
+  flex: 0 0 auto;
+}
+
+.credit-logo-wide {
+  width: 220px;
+}
+
+.credit-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.credit-text strong {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.credit-logos {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
 .leaflet-popup-content {
   margin: 0.8rem 0.9rem;
   min-width: 220px;
@@ -359,5 +389,19 @@ button:hover {
 
   .hero-top {
     flex-direction: column;
+  }
+
+  .site-credit {
+    position: static;
+    margin: 0 1rem 1rem;
+    max-width: none;
+  }
+
+  .credit-logo {
+    width: 72px;
+  }
+
+  .credit-logo-wide {
+    width: 180px;
   }
 }

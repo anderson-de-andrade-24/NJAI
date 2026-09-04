@@ -446,7 +446,11 @@ async function initialize() {
     unique(payload.records.map((record) => record.district_type_label)),
     "All district types",
   );
-  buildSelect(el.urbanicitySelect, unique(payload.records.map((record) => safeText(record.urbanicity))), "All urbanicity");
+  buildSelect(
+    el.urbanicitySelect,
+    unique(payload.records.map((record) => safeText(record.urbanicity))),
+    "All urbanicity",
+  );
   buildSelect(el.enrollmentSelect, ["Under 1,000", "1,000 to 4,999", "5,000 to 9,999", "10,000 and above", "missing"], "All sizes");
   buildSelect(el.frplSelect, ["Under 25%", "25% to 49.9%", "50% and above", "missing"], "All values");
   buildSelect(el.multilingualSelect, ["Under 5%", "5% to 14.9%", "15% and above", "missing"], "All values");

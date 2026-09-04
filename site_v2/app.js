@@ -7,7 +7,6 @@ const mapHint = document.getElementById("map-hint");
 const panelTitle = document.getElementById("panel-title");
 const panelSubtitle = document.getElementById("panel-subtitle");
 const panelContent = document.getElementById("panel-content");
-const counts = document.getElementById("counts");
 const searchInput = document.getElementById("search");
 const districtTypeSelect = document.getElementById("district-type");
 const clearSelectionBtn = document.getElementById("clear-selection");
@@ -137,16 +136,6 @@ function tableRows(items, countKey = "count", percentKey = "percent") {
       `,
     )
     .join("");
-}
-
-function renderCounts() {
-  const matchedToMap = allDistricts?.features?.length || 0;
-  counts.innerHTML = `
-    <strong>Districts:</strong> ${summary.record_count || records.length}<br />
-    <strong>With AI policy:</strong> ${summary.districts_with_ai_policy || 0}<br />
-    <strong>Average enrollment:</strong> ${formatPopulation(summary.average_enrollment)}<br />
-    <strong>Map polygons:</strong> ${matchedToMap}
-  `;
 }
 
 function popupHtml(districtName, record, districtType) {
@@ -302,12 +291,7 @@ function setLayerState(layer, selected = false, hovered = false) {
 function resetPanel() {
   panelTitle.textContent = "Select a district";
   panelSubtitle.textContent = "Hover over a district to preview high-level data, then click to explore full district details.";
-  panelContent.innerHTML = `
-    <div class="detail-card">
-      <h3>What’s new in this view</h3>
-      <p>The map now uses the 2025-2026 district workbook and keeps richer race, grade, and student-support data behind expandable sections.</p>
-    </div>
-  `;
+  panelContent.innerHTML = "";
 }
 
 function clearSelection() {
@@ -438,7 +422,6 @@ async function loadDashboard() {
 
   allDistricts = await districtResp.json();
   renderGeoLayer();
-  renderCounts();
 }
 
 loadDashboard().catch((err) => {

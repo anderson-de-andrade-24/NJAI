@@ -118,7 +118,14 @@ def to_fraction(value):
     number = to_float(value)
     if number is None:
         return None
-    return number / 100.0 if number > 1 else number
+    return number / 100.0
+
+
+def clean_urbanicity(value):
+    text = clean_text(value)
+    if not text:
+        return None
+    return text.replace(" (inferred)", "")
 
 
 def to_bool(value):
@@ -257,7 +264,7 @@ def build_records():
             "district_type_label": district_type_label,
             "total_enrollment": total_enrollment,
             "number_of_schools": to_int(value_for(row, header_index, "Number of Schools")),
-            "urbanicity": clean_text(value_for(row, header_index, "Urbanicity")),
+            "urbanicity": clean_urbanicity(value_for(row, header_index, "Urbanicity")),
             "urbanicity_score": to_float(value_for(row, header_index, "Urbanicity Score")),
             "has_ai_policy": ai_policy or bool(policy_link) or bool(policy_number),
             "ai_policy_flag": ai_policy,
