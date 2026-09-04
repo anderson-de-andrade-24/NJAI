@@ -313,11 +313,13 @@ function attachLayerEvents(layer, districtName, districtType) {
   layer.bindPopup(popupHtml(districtName, record, districtType));
 
   layer.on("mouseover", () => {
+    if (selectedLayer && layer !== selectedLayer) return;
     if (layer !== selectedLayer) setLayerState(layer, false, true);
     renderDistrictDetails(districtName, record, districtType);
   });
 
   layer.on("mouseout", () => {
+    if (selectedLayer && layer !== selectedLayer) return;
     if (layer !== selectedLayer) setLayerState(layer, false, false);
     if (!selectedLayer) resetPanel();
   });
